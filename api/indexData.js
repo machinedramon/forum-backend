@@ -19,7 +19,27 @@ const indexData = async () => {
 
     if (indexExists.body) {
       console.log("🔄 Índice já existe. Excluindo...");
-      await esClient.indices.delete({ index: indexName });
+      const deleteResponse = await esClient.indices.delete({
+        index: indexName,
+      });
+      if (deleteResponse.body.acknowledged) {
+        console.log("🗑️ Índice excluído com sucesso.");
+      } else {
+        console.error("❌ Falha ao excluir o índice.");
+        return;
+      }
+    }
+
+    // Aguarda a exclusão do índice
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Verifica novamente se o índice existe para garantir que foi excluído
+    const indexExistsAfterDelete = await esClient.indices.exists({
+      index: indexName,
+    });
+    if (indexExistsAfterDelete.body) {
+      console.error("❌ O índice ainda existe após a tentativa de exclusão.");
+      return;
     }
 
     // Cria o índice
