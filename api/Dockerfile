@@ -9,6 +9,9 @@ RUN yarn install
 # Copia todos os arquivos do projeto
 COPY . .
 
+# Verifique se os arquivos foram copiados corretamente
+RUN ls -la
+
 EXPOSE 9900
 
 CMD ["node", "index.js"]
