@@ -7,7 +7,6 @@ package-lock.json
 
 # Docker
 *.log
-.env
 
 # API logs
 /api/logs

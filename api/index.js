@@ -114,5 +114,5 @@ app.post("/smartsearch", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-  logger.info(`Server started on port ${port}`);
+  logger.info(`Server started on port ${port}`);  
 });
