@@ -2,8 +2,11 @@ FROM node:20.15.1
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock ./
-RUN yarn install
+# Copia package.json e package-lock.json (se existir)
+COPY package.json package-lock.json ./
+
+# Instala dependências
+RUN npm install
 
 COPY . .
 
