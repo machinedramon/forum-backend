@@ -4,7 +4,7 @@ const generateQuery = require("./utils/generateQuery");
 const executeSearch = require("./utils/executeSearch");
 const extractSearchTerms = require("./utils/extractSearchTerms");
 const winston = require("winston");
-require("winston-logstash");
+const { LogstashTransport } = require("winston-logstash-transport");
 const LokiTransport = require("winston-loki");
 const promBundle = require("express-prom-bundle");
 const { Histogram } = require("prom-client");
@@ -15,7 +15,7 @@ const port = 9900;
 // Configuração do Winston para Logstash e Loki
 const logger = winston.createLogger({
   transports: [
-    new winston.transports.Logstash({
+    new LogstashTransport({
       port: 5044,
       node_name: "api",
       host: process.env.LOGSTASH_HOST || "localhost",
