@@ -1,0 +1,223 @@
+{
+  "took": 30,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 3,
+      "relation": "eq"
+    },
+    "max_score": 3.1844637,
+    "hits": [
+      {
+        "_index": "livros",
+        "_type": "_doc",
+        "_id": "L1508-E5968",
+        "_score": 3.1844637,
+        "_source": {
+          "parent": "L1508-E5968",
+          "book_serie": {
+            "id": "book-serie_4a-serie",
+            "title": "4ª Série"
+          },
+          "text_1": "Folha de Rosto, Dedicatória, Capítulo 1 - Aspectos Introdutórios, Capítulo 2 - Modalidades e espécies de áreas de preservação permanente, Expediente, Capítulo 4 - Regime jurídico especial das ocupações rurais e urbanas consolidadas em área de preservação permanente, Capítulo 3 - Exceções à regra geral de vedação de interferência em áreas de preservação permanente, Referências",
+          "filters": [
+            {
+              "id": "area-interest_ambiental",
+              "title": "Ambiental"
+            }
+          ],
+          "tags": [
+            {
+              "id": "kwrd_areas-de-preservacao-permanente",
+              "title": "Áreas de preservação permanente"
+            },
+            {
+              "id": "kwrd_direito-ambiental",
+              "title": "Direito Ambiental"
+            },
+            {
+              "id": "kwrd_direito-urbanistico",
+              "title": "Direito Urbanístico"
+            },
+            {
+              "id": "area-interest_administrativo",
+              "title": "Administrativo"
+            },
+            {
+              "id": "area-interest_urbanistico",
+              "title": "Urbanístico"
+            },
+            {
+              "id": "area-interest_municipal",
+              "title": "Municipal"
+            },
+            {
+              "id": "book-serie_4a-serie",
+              "title": "4ª Série"
+            },
+            {
+              "id": "author_pedro-niebuhr",
+              "title": "Pedro Niebuhr"
+            }
+          ],
+          "meta": {
+            "language": "pt-br",
+            "chapter_type": "pre-textual",
+            "order": 1
+          },
+          "text_3": "O livro aborda, de maneira didática, aquele que é considerado um dos principais e mais controvertidos temas do Direito Ambiental: as áreas de preservação permanente. Todas as principais disposições da legislação ambiental sobre áreas de preservação permanente são analisadas, de forma detalhada, com farta remissão à doutrina e jurisprudência. Ao leitor são apresentadas as diferentes interpretações atinentes a cada aspecto do regime jurídico geral das áreas de preservação permanente, bem como suas modalidades e exceções, nos seus aspectos teóricos e práticos. O Manual das áreas de preservação permanente é o guia completo sobre o assunto.",
+          "text_2": "MANUAL DAS ÁREAS DE PRESERVAÇÃO PERMANENTE",
+          "text_5": "REGIME JURÍDICO GERAL, MODALIDADES E EXCEÇÕES",
+          "id": "L1508-E5968",
+          "text_4": "MANUAL DAS ÁREAS DE PRESERVAÇÃO PERMANENTE",
+          "is_actual": true,
+          "publish_date": "2024-05-31T12:09:09.374Z",
+          "entity": {
+            "subtitle": "REGIME JURÍDICO GERAL, MODALIDADES E EXCEÇÕES"
+          },
+          "edition_number": "3",
+          "bgImage": "https://images.pexels.com/photos/957024/forest-trees-perspective-bright-957024.jpeg",
+          "cdd": "341.347",
+          "cdu": "349.6",
+          "editions": [
+            {
+              "book_num_id": "L1508",
+              "is_actual": true,
+              "isbn": "978-65-5518-760-1",
+              "subtitle": "REGIME JURÍDICO GERAL, MODALIDADES E EXCEÇÕES",
+              "num_id": "E5968",
+              "pages": "316",
+              "coordinators": [],
+              "number": "3",
+              "is_published": true,
+              "publish_date": 1717157349374,
+              "description": "O livro aborda, de maneira didática, aquele que é considerado um dos principais e mais controvertidos temas do Direito Ambiental: as áreas de preservação permanente. Todas as principais disposições da legislação ambiental sobre áreas de preservação permanente são analisadas, de forma detalhada, com farta remissão à doutrina e jurisprudência. Ao leitor são apresentadas as diferentes interpretações atinentes a cada aspecto do regime jurídico geral das áreas de preservação permanente, bem como suas modalidades e exceções, nos seus aspectos teóricos e práticos. O Manual das áreas de preservação permanente é o guia completo sobre o assunto.",
+              "id": "manual-das-areas-de-preservacao-permanente-E5968",
+              "tags": [],
+              "type": "edition",
+              "title": " MANUAL DAS ÁREAS DE PRESERVAÇÃO PERMANENTE",
+              "authors": [
+                {
+                  "title": "Pedro Niebuhr",
+                  "id": "author_pedro-niebuhr"
+                }
+              ],
+              "chapters": [
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43940-1.pdf",
+                  "chapter_type": "pre-textual",
+                  "num_id": "43940",
+                  "edition_num_id": "E5968",
+                  "order": 1,
+                  "id": "folha-de-rosto-43940",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Folha de Rosto",
+                  "ocr": "Belo Horizonte 2024 PEDRO NIEBUHR MANUAL DAS ÁREAS DE PRESERVAÇÃO PERMANENTE REGIME "
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43941-1.pdf",
+                  "chapter_type": "pre-textual",
+                  "num_id": "43941",
+                  "edition_num_id": "E5968",
+                  "order": 2,
+                  "id": "expediente-43941",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Expediente",
+                  "ocr": "© 2018 Editora Fórum Ltda. 2022 2ª edição 2024 3ª edição É proibida a reprodução total ou "
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43942-1.pdf",
+                  "chapter_type": "pre-textual",
+                  "num_id": "43942",
+                  "edition_num_id": "E5968",
+                  "order": 3,
+                  "id": "dedicatoria-43942",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Dedicatória",
+                  "ocr": "Para Luiza."
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43943-1.pdf",
+                  "chapter_type": "capitulo",
+                  "num_id": "43943",
+                  "edition_num_id": "E5968",
+                  "order": 4,
+                  "id": "capitulo-1-aspectos-introdutorios-43943",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Capítulo 1 - Aspectos Introdutórios",
+                  "ocr": "CAPÍTULO 1 ASPECTOS INTRODUTÓRIOS 1.1 Antecedentes normativos Há alguma controvérsia doutrinária acerca da origem "
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43944-1.pdf",
+                  "chapter_type": "capitulo",
+                  "num_id": "43944",
+                  "edition_num_id": "E5968",
+                  "order": 5,
+                  "id": "capitulo-2-modalidades-e-especies-de-areas-de-43944",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Capítulo 2 - Modalidades e espécies de áreas de preservação permanente",
+                  "ocr": "CAPÍTULO 2 MODALIDADES E ESPÉCIES DE ÁREAS DE PRESERVAÇÃO PERMANENTE 2.1 Classificações A Lei"
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43945-1.pdf",
+                  "chapter_type": "capitulo",
+                  "num_id": "43945",
+                  "edition_num_id": "E5968",
+                  "order": 6,
+                  "id": "capitulo-3-excecoes-a-regra-geral-de-vedacao-43945",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Capítulo 3 - Exceções à regra geral de vedação de interferência em áreas de preservação permanente",
+                  "ocr": "CAPÍTULO 3 EXCEÇÕES À REGRA GERAL DE VEDAÇÃO DE INTERFERÊNCIA EM ÁREAS DE PRESERVAÇÃO PERMANENTE "
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43946-1.pdf",
+                  "chapter_type": "capitulo",
+                  "num_id": "43946",
+                  "edition_num_id": "E5968",
+                  "order": 7,
+                  "id": "capitulo-4-regime-juridico-especial-das-43946",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Capítulo 4 - Regime jurídico especial das ocupações rurais e urbanas consolidadas em área de preservação permanente",
+                  "ocr": "CAPÍTULO 4 REGIME JURÍDICO ESPECIAL DAS OCUPAÇÕES RURAIS E URBANAS CONSOLIDADAS EM ÁREA DE PRESERVAÇÃO"
+                },
+                {
+                  "pdf": "https://bid1006-production-private.s3.sa-east-1.amazonaws.com/book/L1508/E5968/43947-1.pdf",
+                  "chapter_type": "pos-textual",
+                  "num_id": "43947",
+                  "edition_num_id": "E5968",
+                  "order": 8,
+                  "id": "referencias-43947",
+                  "key": "",
+                  "language": "pt-br",
+                  "type": "chapter",
+                  "title": "Referências",
+                  "ocr": "REFERÊNCIAS AHRENS, Sergio. O Código Florestal Brasileiro e o uso da terra: histórico, fundamentos "
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

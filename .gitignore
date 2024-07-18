@@ -1,0 +1,48 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Docker
+*.log
+docker-compose.override.yml
+.env
+Dockerfile
+
+# API logs
+/api/logs
+/api/pm2-logs
+
+# VSCode
+.vscode/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Prometheus
+/prometheus/data/
+
+# Grafana
+/grafana-storage/
+
+# Loki
+/loki/data/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# JetBrains
+.idea/
+
+# Miscellaneous
+!.github

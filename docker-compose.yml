@@ -1,0 +1,96 @@
+version: '7.14'
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.14.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    container_name: logstash
+    volumes:
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    ports:
+      - 5044:5044
+    depends_on:
+      - elasticsearch
+    environment:
+      - LS_JAVA_OPTS=-Xms512m -Xmx512m
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  loki:
+    image: grafana/loki:2.3.0
+    container_name: loki
+    ports:
+      - 3100:3100
+    volumes:
+      - ./loki/config:/mnt/config
+    command: -config.file=/mnt/config/loki-local-config.yaml
+
+  promtail:
+    image: grafana/promtail:2.3.0
+    container_name: promtail
+    volumes:
+      - /var/log:/var/log
+      - ./promtail/config:/etc/promtail
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
+  api:
+    image: node:20.15.1
+    container_name: api
+    working_dir: /usr/src/app
+    volumes:
+      - ./api:/usr/src/app
+    ports:
+      - 9900:9900
+    depends_on:
+      - elasticsearch
+      - prometheus
+      - loki
+    environment:
+      - NODE_ENV=production
+      - LOGSTASH_HOST=logstash:5044
+
+volumes:
+  esdata:
+    driver: local
+  grafana-storage:
+    driver: local
