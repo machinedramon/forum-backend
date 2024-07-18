@@ -2,11 +2,8 @@ FROM node:20.15.1
 
 WORKDIR /usr/src/app
 
-# Instala o Yarn globalmente
-RUN npm install -g yarn
-
-# Copia package.json e instala as dependências
-COPY package.json ./
+# Copia package.json e yarn.lock e instala as dependências
+COPY package.json yarn.lock ./
 RUN yarn install
 
 # Copia todos os arquivos do projeto
