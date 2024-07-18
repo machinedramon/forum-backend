@@ -74,16 +74,12 @@ services:
   api:
     build: ./api
     container_name: api
-    working_dir: /usr/src/app
-    volumes:
-      - ./api:/usr/src/app
     ports:
       - 9900:9900
     depends_on:
       - elasticsearch
       - prometheus
       - loki
-      - logstash
     environment:
       - NODE_ENV=production
       - LOGSTASH_HOST=logstash:5044
