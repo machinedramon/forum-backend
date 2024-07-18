@@ -395,9 +395,9 @@ scrape_configs:
 
 **Certifique-se de liberar as portas no AWS Lightsail**
 
-1. **API (Node.js):** `http://52.0.192.118:9900`
-2. **Elasticsearch:** `http://52.0.192.118:9200`
-3. **Kibana:** `http://52.0.192.118:5601`
-4. **Prometheus:** `http://52.0.192.118:9090`
-5. **Grafana:** `http://52.0.192.118:3000` (usuário:    `admin`, senha: `admin`)
-6. **Loki:** `http://52.0.192.118:3100`
+1. **API (Node.js):** [http://52.0.192.118:9900](http://52.0.192.118:9900)
+2. **Elasticsearch:** [http://52.0.192.118:9200](http://52.0.192.118:9200)
+3. **Kibana:** [http://52.0.192.118:5601](http://52.0.192.118:5601)
+4. **Prometheus:** [http://52.0.192.118:9090](http://52.0.192.118:9090)
+5. **Grafana:** [http://52.0.192.118:3000](http://52.0.192.118:3000) (usuário: `admin`, senha: `admin`)
+6. **Loki:** [http://52.0.192.118:3100](http://52.0.192.118:3100)
