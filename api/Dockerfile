@@ -2,12 +2,13 @@ FROM node:20.15.1
 
 WORKDIR /usr/src/app
 
-# Copia package.json e package-lock.json (se existir)
-COPY package.json package-lock.json ./
+# Copia o package.json
+COPY package.json ./
 
-# Instala dependências
+# Instala as dependências
 RUN npm install
 
+# Copia o restante dos arquivos
 COPY . .
 
 EXPOSE 9900
