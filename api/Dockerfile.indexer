@@ -2,7 +2,7 @@ FROM node:20.15.1
 
 WORKDIR /usr/src/app
 
-COPY forum-backend/package.json forum-backend/yarn.lock ./
+COPY package.json yarn.lock ./
 
 RUN yarn install
 
