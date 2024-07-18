@@ -63,6 +63,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Endpoint padrão para verificar se a API está rodando
+app.get("/", (req, res) => {
+  res.send("Fórum API está rodando 🤝🏼");
+});
+
 // Endpoint para busca inteligente
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;

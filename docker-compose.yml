@@ -57,13 +57,11 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
 
   loki:
-    image: grafana/loki:2.3.0
+    build:
+      context: ./loki
     container_name: loki
     ports:
       - 3100:3100
-    volumes:
-      - ./loki/config:/mnt/config
-    command: -config.file=/mnt/config/loki-local-config.yaml
 
   promtail:
     image: grafana/promtail:2.3.0
