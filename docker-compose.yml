@@ -83,6 +83,7 @@ services:
       - elasticsearch
       - prometheus
       - loki
+      - logstash
     environment:
       - NODE_ENV=production
       - LOGSTASH_HOST=logstash:5044
