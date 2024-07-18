@@ -12,16 +12,23 @@ const { Histogram } = require("prom-client");
 const app = express();
 const port = 9900;
 
+require("dotenv").config();
+
+const logstashHost = process.env.LOGSTASH_HOST || "logstash";
+const logstashPort = process.env.LOGSTASH_PORT || 5044;
+const lokiHost = process.env.LOKI_HOST || "loki";
+const lokiPort = process.env.LOKI_PORT || 3100;
+
 // Configuração do Winston para Logstash e Loki
 const logger = winston.createLogger({
   transports: [
     new LogstashTransport({
-      port: 5044,
+      port: logstashPort,
       node_name: "api",
-      host: process.env.LOGSTASH_HOST || "localhost",
+      host: logstashHost,
     }),
     new LokiTransport({
-      host: "http://loki:3100",
+      host: `http://${lokiHost}:${lokiPort}`,
       labels: { job: "api" },
     }),
   ],
@@ -114,5 +121,5 @@ app.post("/smartsearch", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-  logger.info(`Server started on port ${port}`);  
+  logger.info(`Server started on port ${port}`);
 });

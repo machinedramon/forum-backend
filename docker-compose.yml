@@ -80,9 +80,9 @@ services:
       - elasticsearch
       - prometheus
       - loki
-    environment:
-      - NODE_ENV=production
-      - LOGSTASH_HOST=logstash:5044
+      - logstash
+    env_file:
+      - .env
 
 volumes:
   esdata:
