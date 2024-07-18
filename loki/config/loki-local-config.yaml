@@ -22,7 +22,7 @@ schema_config:
       schema: v11
       index:
         prefix: index_
-        period: 168h
+        period: 24h
 
 storage_config:
   boltdb_shipper:
@@ -44,3 +44,7 @@ chunk_store_config:
 table_manager:
   retention_deletes_enabled: true
   retention_period: 168h
+
+compactor:
+  working_directory: /loki/boltdb-shipper-compactor
+  shared_store: filesystem
