@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { Client } = require("@elastic/elasticsearch");
 const generateQuery = require("./utils/generateQuery");
 const executeSearch = require("./utils/executeSearch");
 const extractSearchTerms = require("./utils/extractSearchTerms");
@@ -18,6 +19,8 @@ const logstashHost = process.env.LOGSTASH_HOST || "logstash";
 const logstashPort = process.env.LOGSTASH_PORT || 5044;
 const lokiHost = process.env.LOKI_HOST || "loki";
 const lokiPort = process.env.LOKI_PORT || 3100;
+
+const esClient = new Client({ node: "http://52.0.192.118:9200" });
 
 // Configuração do Winston para Logstash e Loki
 const logger = winston.createLogger({
@@ -117,12 +120,11 @@ app.post("/smartsearch", async (req, res) => {
   }
 });
 
-// Outros endpoints...
-
 // Endpoint para visualizar os dados indexados
 app.get("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
   try {
+    console.log("🔍 Buscando livros...");
     const { body } = await esClient.search({
       index: "content",
       body: {
@@ -132,10 +134,15 @@ app.get("/books", async (req, res) => {
         size: size,
       },
     });
+    console.log("📚 Livros encontrados:", body.hits.hits.length);
+    console.log(
+      "📚 Dados dos livros encontrados:",
+      JSON.stringify(body.hits.hits, null, 2)
+    ); // Adicionado para depuração
     res.send(body.hits.hits);
   } catch (error) {
     console.error("❌ Erro durante a busca:", error);
-    res.status(500).send("Erro durante a busca");
+    res.status(500).send(`Erro durante a busca: ${error.message}`);
   }
 });
 
