@@ -124,7 +124,7 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
-app.get("/books", async (req, res) => {
+app.post("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
   try {
     const esResponse = await esClient.search({
