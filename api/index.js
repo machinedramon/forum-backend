@@ -137,11 +137,12 @@ app.post("/books", async (req, res) => {
       },
     });
 
+    if (!esResponse) {
+      throw new Error("No response from Elasticsearch");
+    }
+
     console.log("Elasticsearch Response: ", esResponse);
-
-    const hits = esResponse.hits.hits;
-
-    res.send(hits);
+    res.send(esResponse.body);
   } catch (error) {
     console.error("❌ Erro durante a busca:", error.message);
     res.status(500).send(`Erro durante a busca: ${error.message}`);
