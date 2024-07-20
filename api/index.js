@@ -127,7 +127,7 @@ app.post("/smartsearch", async (req, res) => {
 app.get("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
   try {
-    const { body } = await esClient.search({
+    const esResponse = await esClient.search({
       index: "content",
       body: {
         query: {
@@ -137,21 +137,23 @@ app.get("/books", async (req, res) => {
       },
     });
 
-    // Adicione verificações e logs
-    if (!body) {
+    if (!esResponse) {
+      throw new Error("No response from Elasticsearch");
+    }
+    if (!esResponse.body) {
       throw new Error("No response body from Elasticsearch");
     }
-    if (!body.hits) {
+    if (!esResponse.body.hits) {
       throw new Error("No hits in response body from Elasticsearch");
     }
-    if (!body.hits.hits) {
+    if (!esResponse.body.hits.hits) {
       throw new Error("No hits.hits in response body from Elasticsearch");
     }
 
-    res.send(body.hits.hits);
+    res.send(esResponse.body.hits.hits);
   } catch (error) {
-    console.error("❌ Erro durante a busca:", error);
-    res.status(500).send("Erro durante a busca");
+    console.error("❌ Erro durante a busca:", error.message);
+    res.status(500).send(`Erro durante a busca: ${error.message}`);
   }
 });
 
