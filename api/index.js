@@ -137,6 +137,8 @@ app.post("/books", async (req, res) => {
       },
     });
 
+    console.log("Elasticsearch Response: ", esResponse);
+
     if (!esResponse) {
       throw new Error("No response from Elasticsearch");
     }
