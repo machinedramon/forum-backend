@@ -119,6 +119,26 @@ app.post("/smartsearch", async (req, res) => {
 
 // Outros endpoints...
 
+// Endpoint para visualizar os dados indexados
+app.get("/books", async (req, res) => {
+  const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
+  try {
+    const { body } = await esClient.search({
+      index: "content",
+      body: {
+        query: {
+          match: { type: "book" },
+        },
+        size: size,
+      },
+    });
+    res.send(body.hits.hits);
+  } catch (error) {
+    console.error("❌ Erro durante a busca:", error);
+    res.status(500).send("Erro durante a busca");
+  }
+});
+
 app.listen(port, () => {
   console.log(`🚀 Servidor rodando em http://localhost:${port}`);
   logger.info(`Server started on port ${port}`);
