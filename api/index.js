@@ -125,7 +125,7 @@ app.post("/smartsearch", async (req, res) => {
 
 // Endpoint para visualizar os dados indexados
 app.post("/books", async (req, res) => {
-  const size = req.query.size ? parseInt(req.query.size) : 2;
+  const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
   try {
     const esResponse = await esClient.search({
       index: "content",
@@ -137,20 +137,16 @@ app.post("/books", async (req, res) => {
       },
     });
 
-    // Log detalhado da resposta
     console.log(
       "Elasticsearch Response: ",
-      JSON.stringify(esResponse.body, null, 2)
+      JSON.stringify(esResponse, null, 2)
     );
 
-    // Verifique se a resposta não está vazia
-    if (!esResponse.body || !esResponse.body.hits) {
+    if (!esResponse || !esResponse.body || !esResponse.body.hits) {
       throw new Error("No response body or hits from Elasticsearch");
     }
 
-    console.log("Sending response...");
     res.json(esResponse.body);
-    console.log("Response sent");
   } catch (error) {
     console.error("❌ Erro durante a busca:", error.message);
     res.status(500).send(`Erro durante a busca: ${error.message}`);
