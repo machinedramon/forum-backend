@@ -11,7 +11,7 @@ const { Histogram } = require("prom-client");
 const { Client } = require("@elastic/elasticsearch");
 
 const app = express();
-const port = 9900;
+const port = 9910; // Porta alterada para 9910
 
 require("dotenv").config();
 
@@ -20,7 +20,7 @@ const logstashPort = process.env.LOGSTASH_PORT || 5044;
 const lokiHost = process.env.LOKI_HOST || "loki";
 const lokiPort = process.env.LOKI_PORT || 3100;
 const elasticsearchHost =
-  process.env.ELASTICSEARCH_HOST || "http://elasticsearch:9200";
+  process.env.ELASTICSEARCH_HOST || "http://elasticsearch:9200"; // Note que elasticsearch é o nome do serviço no docker-compose
 
 // Configuração do cliente Elasticsearch
 const esClient = new Client({ node: elasticsearchHost });
@@ -82,7 +82,7 @@ app.get("/", (req, res) => {
 });
 
 // Endpoint para busca inteligente
-// Exemplo de URL de teste: http://localhost:9900/smartsearch
+// Exemplo de URL de teste: http://localhost:9910/smartsearch
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;
 
@@ -125,7 +125,7 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
-// Exemplo de URL de teste: http://localhost:9900/books?size=2&verbose=false
+// Exemplo de URL de teste: http://localhost:9910/books?size=2&verbose=false
 app.post("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 2;
   const verbose = req.query.verbose === "true"; // Checa se o verbose é true
@@ -160,13 +160,8 @@ app.post("/books", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-  logger.info(`Server started on port ${port}`);
-});
-
 // Endpoint para visualizar os dados de um livro específico pelo ID
-// Exemplo de URL de teste: http://localhost:9900/books/L5712-E5971
+// Exemplo de URL de teste: http://localhost:9910/books/L5712-E5971
 app.post("/books/:id", async (req, res) => {
   const { id } = req.params;
   try {
