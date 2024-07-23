@@ -9,7 +9,6 @@ const LokiTransport = require("winston-loki");
 const promBundle = require("express-prom-bundle");
 const { Histogram } = require("prom-client");
 const { Client } = require("@elastic/elasticsearch");
-const path = require("path");
 
 const app = express();
 const port = 9910; // Porta alterada para 9910
@@ -70,6 +69,7 @@ const elasticHistogram = new Histogram({
 
 const requestLogs = [];
 
+// Middleware para registrar logs das requisições
 app.use((req, res, next) => {
   const logEntry = {
     method: req.method,
@@ -93,16 +93,10 @@ app.get("/logs", (req, res) => {
   res.json(requestLogs);
 });
 
-// Endpoint para servir a página de logs
-app.get("/logs/view", (req, res) => {
-  res.sendFile(path.join(__dirname, "logs.html"));
-});
-
 // Endpoint para busca inteligente
 // Exemplo de URL de teste: http://localhost:9910/smartsearch
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;
-
   try {
     console.log("🔍 Recebendo consulta do usuário:", query);
     logger.info("Smart search query received", { query });
@@ -151,9 +145,7 @@ app.post("/books", async (req, res) => {
     const esResponse = await esClient.search({
       index: "content",
       body: {
-        query: {
-          match: { type: "book" },
-        },
+        query: { match: { type: "book" } },
         size: size,
         _source: verbose
           ? true
@@ -165,10 +157,8 @@ app.post("/books", async (req, res) => {
       "Elasticsearch Response: ",
       JSON.stringify(esResponse, null, 2)
     );
-
-    if (!esResponse) {
+    if (!esResponse)
       throw new Error("No response body or hits from Elasticsearch");
-    }
 
     res.json(esResponse);
   } catch (error) {
@@ -182,19 +172,14 @@ app.post("/books", async (req, res) => {
 app.post("/books/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const esResponse = await esClient.get({
-      index: "content",
-      id: id,
-    });
+    const esResponse = await esClient.get({ index: "content", id });
 
     console.log(
       "Elasticsearch Response: ",
       JSON.stringify(esResponse, null, 2)
     );
-
-    if (!esResponse) {
+    if (!esResponse)
       throw new Error("No response body or hits from Elasticsearch");
-    }
 
     res.json(esResponse);
   } catch (error) {
