@@ -125,9 +125,11 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
-// Exemplo de URL de teste: http://localhost:9900/books?size=2
+// Exemplo de URL de teste: http://localhost:9900/books?size=2&verbose=false
 app.post("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 2;
+  const verbose = req.query.verbose === "true"; // Checa se o verbose é true
+
   try {
     const esResponse = await esClient.search({
       index: "content",
@@ -136,6 +138,9 @@ app.post("/books", async (req, res) => {
           match: { type: "book" },
         },
         size: size,
+        _source: verbose
+          ? true
+          : { excludes: ["editions.chapters.ocr", "editions.chapters.pdf"] }, // Exclui os campos OCR e PDF se verbose for false
       },
     });
 
@@ -153,6 +158,11 @@ app.post("/books", async (req, res) => {
     console.error("❌ Erro durante a busca:", error.message);
     res.status(500).send(`Erro durante a busca: ${error.message}`);
   }
+});
+
+app.listen(port, () => {
+  console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+  logger.info(`Server started on port ${port}`);
 });
 
 // Endpoint para visualizar os dados de um livro específico pelo ID
