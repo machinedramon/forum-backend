@@ -20,7 +20,7 @@ const logstashPort = process.env.LOGSTASH_PORT || 5044;
 const lokiHost = process.env.LOKI_HOST || "loki";
 const lokiPort = process.env.LOKI_PORT || 3100;
 const elasticsearchHost =
-  process.env.ELASTICSEARCH_HOST || "http://52.0.192.118:9200";
+  process.env.ELASTICSEARCH_HOST || "http://elasticsearch:9200";
 
 // Configuração do cliente Elasticsearch
 const esClient = new Client({ node: elasticsearchHost });
@@ -82,6 +82,7 @@ app.get("/", (req, res) => {
 });
 
 // Endpoint para busca inteligente
+// Exemplo de URL de teste: http://localhost:9900/smartsearch
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;
 
@@ -124,8 +125,9 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
+// Exemplo de URL de teste: http://localhost:9900/books?size=2
 app.post("/books", async (req, res) => {
-  const size = req.query.size ? parseInt(req.query.size) : 50; // Padrão para 50 resultados
+  const size = req.query.size ? parseInt(req.query.size) : 2;
   try {
     const esResponse = await esClient.search({
       index: "content",
@@ -142,11 +144,37 @@ app.post("/books", async (req, res) => {
       JSON.stringify(esResponse, null, 2)
     );
 
-    if (!esResponse || !esResponse.body || !esResponse.body.hits) {
+    if (!esResponse) {
       throw new Error("No response body or hits from Elasticsearch");
     }
 
-    res.json(esResponse.body);
+    res.json(esResponse);
+  } catch (error) {
+    console.error("❌ Erro durante a busca:", error.message);
+    res.status(500).send(`Erro durante a busca: ${error.message}`);
+  }
+});
+
+// Endpoint para visualizar os dados de um livro específico pelo ID
+// Exemplo de URL de teste: http://localhost:9900/books/L5712-E5971
+app.post("/books/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const esResponse = await esClient.get({
+      index: "content",
+      id: id,
+    });
+
+    console.log(
+      "Elasticsearch Response: ",
+      JSON.stringify(esResponse, null, 2)
+    );
+
+    if (!esResponse) {
+      throw new Error("No response body or hits from Elasticsearch");
+    }
+
+    res.json(esResponse);
   } catch (error) {
     console.error("❌ Erro durante a busca:", error.message);
     res.status(500).send(`Erro durante a busca: ${error.message}`);
