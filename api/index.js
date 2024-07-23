@@ -20,7 +20,7 @@ const logstashPort = process.env.LOGSTASH_PORT || 5044;
 const lokiHost = process.env.LOKI_HOST || "loki";
 const lokiPort = process.env.LOKI_PORT || 3100;
 const elasticsearchHost =
-  process.env.ELASTICSEARCH_HOST || "http://elasticsearch:9200"; // Note que elasticsearch é o nome do serviço no docker-compose
+  process.env.ELASTICSEARCH_HOST || "http://elasticsearch:9200";
 
 // Configuração do cliente Elasticsearch
 const esClient = new Client({ node: elasticsearchHost });
@@ -67,18 +67,29 @@ const elasticHistogram = new Histogram({
   labelNames: ["status_code"],
 });
 
+const requestLogs = [];
+
 app.use((req, res, next) => {
-  logger.info("Request received", {
+  const logEntry = {
     method: req.method,
     url: req.url,
     body: req.body,
-  });
+    timestamp: new Date(),
+  };
+  requestLogs.push(logEntry);
+  if (requestLogs.length > 100) requestLogs.shift(); // Mantém apenas os últimos 100 logs
+  logger.info("Request received", logEntry);
   next();
 });
 
 // Endpoint padrão para verificar se a API está rodando
 app.get("/", (req, res) => {
   res.send("Fórum API está rodando 🤝🏼");
+});
+
+// Endpoint para visualizar os logs das requisições em tempo real
+app.get("/logs", (req, res) => {
+  res.json(requestLogs);
 });
 
 // Endpoint para busca inteligente
