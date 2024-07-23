@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time API Logs</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      text-align: center;
+    }
+    .log-container {
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+    }
+    .log-entry {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+    .log-entry div {
+      margin: 5px 0;
+    }
+    .log-entry strong {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Real-time API Logs</h1>
+  <div class="log-container" id="log-container"></div>
+
+  <script>
+    const logContainer = document.getElementById('log-container');
+
+    const fetchLogs = async () => {
+      try {
+        const response = await fetch('/logs');
+        const logs = await response.json();
+        logContainer.innerHTML = logs.map(log => `
+          <div class="log-entry">
+            <div><strong>Timestamp:</strong> ${new Date(log.timestamp).toLocaleString()}</div>
+            <div><strong>Method:</strong> ${log.method}</div>
+            <div><strong>URL:</strong> ${log.url}</div>
+            <div><strong>Body:</strong> ${JSON.stringify(log.body)}</div>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error("Error fetching logs:", error);
+      }
+    };
+
+    setInterval(fetchLogs, 5000); // Atualiza a cada 5 segundos
+    fetchLogs(); // Busca os logs na inicialização
+  </script>
+</body>
+</html>

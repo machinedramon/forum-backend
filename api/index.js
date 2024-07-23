@@ -9,6 +9,7 @@ const LokiTransport = require("winston-loki");
 const promBundle = require("express-prom-bundle");
 const { Histogram } = require("prom-client");
 const { Client } = require("@elastic/elasticsearch");
+const path = require("path");
 
 const app = express();
 const port = 9910; // Porta alterada para 9910
@@ -90,6 +91,11 @@ app.get("/", (req, res) => {
 // Endpoint para visualizar os logs das requisições em tempo real
 app.get("/logs", (req, res) => {
   res.json(requestLogs);
+});
+
+// Endpoint para servir a página de logs
+app.get("/logs/view", (req, res) => {
+  res.sendFile(path.join(__dirname, "logs.html"));
 });
 
 // Endpoint para busca inteligente
