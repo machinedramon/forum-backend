@@ -32,6 +32,7 @@ const logger = winston.createLogger({
       port: logstashPort,
       node_name: "api",
       host: logstashHost,
+      max_message_size: 8192, // Limita o tamanho das mensagens de log para 8KB
     }),
     new LokiTransport({
       host: `http://${lokiHost}:${lokiPort}`,
@@ -67,19 +68,11 @@ const elasticHistogram = new Histogram({
   labelNames: ["status_code"],
 });
 
-const requestLogs = [];
-
-// Middleware para registrar logs das requisições
+// Middleware para registrar logs das entradas de consulta do usuário
 app.use((req, res, next) => {
-  const logEntry = {
-    method: req.method,
-    url: req.url,
-    body: req.body,
-    timestamp: new Date(),
-  };
-  requestLogs.push(logEntry);
-  if (requestLogs.length > 100) requestLogs.shift(); // Mantém apenas os últimos 100 logs
-  logger.info("Request received", logEntry);
+  if (req.method === "POST" && req.url === "/smartsearch") {
+    logger.info("User search query received", { query: req.body.query });
+  }
   next();
 });
 
@@ -88,13 +81,7 @@ app.get("/", (req, res) => {
   res.send("Fórum API está rodando 🤝🏼");
 });
 
-// Endpoint para visualizar os logs das requisições em tempo real
-app.get("/logs", (req, res) => {
-  res.json(requestLogs);
-});
-
 // Endpoint para busca inteligente
-// Exemplo de URL de teste: http://localhost:9910/smartsearch
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;
   if (!query) {
@@ -103,13 +90,11 @@ app.post("/smartsearch", async (req, res) => {
 
   try {
     console.log("Recebendo consulta do usuário:", query);
-    logger.info("Smart search query received", { query });
 
     const startOpenAI = Date.now();
     const elasticsearchQuery = await generateQuery(query);
     const durationOpenAI = Date.now() - startOpenAI;
     openAIHistogram.labels("200").observe(durationOpenAI / 1000);
-    logger.info("OpenAI response", { query, response: elasticsearchQuery });
 
     const searchTerms = extractSearchTerms(elasticsearchQuery);
     console.log("Termos de busca extraídos:", searchTerms);
@@ -118,11 +103,9 @@ app.post("/smartsearch", async (req, res) => {
     const esResponse = await executeSearch(elasticsearchQuery);
     const durationElastic = Date.now() - startElastic;
     elasticHistogram.labels("200").observe(durationElastic / 1000);
-    logger.info("Elasticsearch response", { query, response: esResponse });
 
     if (esResponse.hits.total.value === 0) {
       console.log("Nenhum resultado encontrado.");
-      logger.info("No results found", { query });
       return res.status(404).json({ message: "Nenhum resultado encontrado." });
     }
 
@@ -130,7 +113,6 @@ app.post("/smartsearch", async (req, res) => {
     res.json({ ...esResponse, searchTerms });
   } catch (error) {
     console.error("Erro durante a busca:", error);
-    logger.error("Error during search", { error: error.message || error });
     res
       .status(500)
       .json({
@@ -141,10 +123,9 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
-// Exemplo de URL de teste: http://localhost:9910/books?size=2&verbose=false
-app.post("/books", async (req, res) => {
+app.get("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 2;
-  const verbose = req.query.verbose === "true"; // Checa se o verbose é true
+  const verbose = req.query.verbose === "true";
 
   try {
     const esResponse = await esClient.search({
@@ -154,7 +135,7 @@ app.post("/books", async (req, res) => {
         size: size,
         _source: verbose
           ? true
-          : { excludes: ["editions.chapters.ocr", "editions.chapters.pdf"] }, // Exclui os campos OCR e PDF se verbose for false
+          : { excludes: ["editions.chapters.ocr", "editions.chapters.pdf"] },
       },
     });
 
@@ -173,8 +154,7 @@ app.post("/books", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados de um livro específico pelo ID
-// Exemplo de URL de teste: http://localhost:9910/books/L5712-E5971
-app.post("/books/:id", async (req, res) => {
+app.get("/books/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const esResponse = await esClient.get({ index: "content", id });

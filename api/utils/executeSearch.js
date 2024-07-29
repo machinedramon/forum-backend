@@ -1,7 +1,7 @@
 const axios = require("axios");
 
 async function executeSearch(query) {
-  const url = "http://localhost:9200/livros/_search";
+  const url = "http://elasticsearch:9200/content/_search";
   console.log("🔍 Enviando consulta para o Elasticsearch...");
 
   query.highlight = {

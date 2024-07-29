@@ -81,18 +81,65 @@ async function generateQuery(userQuery) {
       });
 
       const responseText = gptResponse.choices[0].message.content.trim();
+      const elasticsearchQuery = JSON.parse(responseText);
 
-      if (responseText.startsWith("{") && responseText.endsWith("}")) {
-        const elasticsearchQuery = JSON.parse(responseText);
+      console.log(
+        `📄 Tentativa ${attempts + 1}: Consulta Elasticsearch gerada:`,
+        JSON.stringify(elasticsearchQuery, null, 2)
+      );
+
+      if (
+        elasticsearchQuery.query &&
+        elasticsearchQuery.query.bool &&
+        elasticsearchQuery.query.bool.should
+      ) {
+        const filteredQuery = {
+          query: {
+            bool: {
+              must: [
+                { match: { type: "book" } },
+                ...elasticsearchQuery.query.bool.should,
+              ],
+            },
+          },
+        };
+
         console.log(
-          `📄 Tentativa ${attempts + 1}: Consulta Elasticsearch gerada:`,
-          JSON.stringify(elasticsearchQuery, null, 2)
+          "📄 Consulta Elasticsearch final: ",
+          JSON.stringify(filteredQuery, null, 2)
         );
 
-        const isValid = validateElasticsearchQuery(elasticsearchQuery);
+        const isValid = validateElasticsearchQuery(filteredQuery);
         if (isValid) {
           console.log(`✅ Tentativa ${attempts + 1}: Consulta válida`);
-          return elasticsearchQuery;
+          return filteredQuery;
+        } else {
+          console.log(
+            `❌ Tentativa ${attempts + 1}: Consulta inválida`,
+            responseText
+          );
+        }
+      } else if (
+        elasticsearchQuery.query &&
+        elasticsearchQuery.query.multi_match
+      ) {
+        const filteredQuery = {
+          query: {
+            bool: {
+              must: [{ match: { type: "book" } }, elasticsearchQuery.query],
+            },
+          },
+        };
+
+        console.log(
+          "📄 Consulta Elasticsearch final: ",
+          JSON.stringify(filteredQuery, null, 2)
+        );
+
+        const isValid = validateElasticsearchQuery(filteredQuery);
+        if (isValid) {
+          console.log(`✅ Tentativa ${attempts + 1}: Consulta válida`);
+          return filteredQuery;
         } else {
           console.log(
             `❌ Tentativa ${attempts + 1}: Consulta inválida`,
