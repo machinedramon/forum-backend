@@ -57,14 +57,16 @@ async function generateQuery(userQuery) {
       - Se o usuário usar aspas duplas ("") ou especificar explicitamente que é um termo exato, use \\match_phrase\\.
       - Se o usuário usar aspas simples ('') para um termo, a busca deve considerar tanto o termo exato (\\match_phrase\\) quanto os termos separados (\\match\\).
 
-      Se a consulta do usuário for muito ampla ou vaga, ou se o usuário explicitamente pedir para "melhorar a busca", adicione automaticamente termos relacionados, variações, plurais e sinônimos. Por exemplo:
-      - Para "candidato", adicione "candidatos", "candidata", "candidatas", "candidatar" e etc, sempre o máximo que conseguir de palavras similares deste tipo.
-      - Para "direito eleitoral", adicione termos relacionados como "lei", "legislação" e etc.
+      IMPORTANTE:
+      - Não use o tipo \\cross_fields\\ com fuzziness. Se for necessário usar fuzziness, aplique apenas em tipos de consultas que suportam.
+      - Certifique-se de que todos os caminhos aninhados estejam corretos e que as consultas aninhadas estejam estruturadas adequadamente.
+      - Use o campo \\editions.chapters\\ como caminho para consultas aninhadas relacionadas aos capítulos, incluindo \\ocr\\.
 
-      IMPORTANTE 1: Conforme o pedido do usuario, faça um auto balanceamento de boosts, mas cuidado pois [nested] query não suportam [_score]. \\text_2\\, \\tags\\ e \\editions.chapters.ocr\\ são geralmente os principais pesos quando buscamos em todo conteúdo.
-      IMPORTANTE 2: Fuzziness não pode ser usado com tipo cross_fields. Só aplique fuzziness se não houver cross_fields.
+      Outras instruções importantes:
+      - A resposta deve sempre estar em português.
+      - Se o usuário pedir melhorias na busca ou assuntos relacionados, utilize a sua criatividade para construir uma consulta que possa ajudar o usuário a encontrar resultados relevantes, mesmo que ele não tenha especificado termos exatos.
 
-      Construa a consulta JSON com base nas diretrizes acima, sem incluir texto adicional ou formatação.
+      POR FIM: Crie a consulta Elasticsearch com base nas diretrizes acima, sem incluir texto adicional ou formatação, apenas a consulta.
       `,
     },
     {
@@ -81,22 +83,53 @@ async function generateQuery(userQuery) {
       });
 
       const responseText = gptResponse.choices[0].message.content.trim();
+      const elasticsearchQuery = JSON.parse(responseText);
 
-      if (responseText.startsWith("{") && responseText.endsWith("}")) {
-        const elasticsearchQuery = JSON.parse(responseText);
-        console.log(
-          `📄 Tentativa ${attempts + 1}: Consulta Elasticsearch gerada:`,
-          JSON.stringify(elasticsearchQuery, null, 2)
-        );
+      console.log(
+        `📄 Tentativa ${attempts + 1}: Consulta Elasticsearch gerada:`,
+        JSON.stringify(elasticsearchQuery, null, 2)
+      );
 
-        // Adicionando o filtro para o tipo "book" na estrutura correta
+      if (
+        elasticsearchQuery.query &&
+        elasticsearchQuery.query.bool &&
+        elasticsearchQuery.query.bool.should
+      ) {
         const filteredQuery = {
           query: {
             bool: {
-              must: [
-                { match: { type: "book" } },
-                ...elasticsearchQuery.query.bool.should,
-              ],
+              must: [{ match: { type: "book" } }],
+              should: elasticsearchQuery.query.bool.should,
+              minimum_should_match: 1,
+            },
+          },
+        };
+
+        console.log(
+          "📄 Consulta Elasticsearch final: ",
+          JSON.stringify(filteredQuery, null, 2)
+        );
+
+        const isValid = validateElasticsearchQuery(filteredQuery);
+        if (isValid) {
+          console.log(`✅ Tentativa ${attempts + 1}: Consulta válida`);
+          return filteredQuery;
+        } else {
+          console.log(
+            `❌ Tentativa ${attempts + 1}: Consulta inválida`,
+            responseText
+          );
+        }
+      } else if (
+        elasticsearchQuery.query &&
+        (elasticsearchQuery.query.multi_match ||
+          elasticsearchQuery.query.match_phrase ||
+          elasticsearchQuery.query.match)
+      ) {
+        const filteredQuery = {
+          query: {
+            bool: {
+              must: [{ match: { type: "book" } }, elasticsearchQuery.query],
             },
           },
         };

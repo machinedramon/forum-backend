@@ -14,6 +14,7 @@ const querySchema = {
             must: { type: "array" },
             should: { type: "array" },
             filter: { type: "array" },
+            minimum_should_match: { type: "integer" }, // Adicionado para suportar minimum_should_match
           },
           additionalProperties: false,
         },
