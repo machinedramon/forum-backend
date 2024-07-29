@@ -120,7 +120,7 @@ app.post("/smartsearch", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados indexados
-app.get("/books", async (req, res) => {
+app.post("/books", async (req, res) => {
   const size = req.query.size ? parseInt(req.query.size) : 2;
   const verbose = req.query.verbose === "true";
 
@@ -151,10 +151,10 @@ app.get("/books", async (req, res) => {
 });
 
 // Endpoint para visualizar os dados de um livro específico pelo ID
-app.get("/books/:id", async (req, res) => {
+app.post("/books/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const esResponse = await esClient.get({ index: "content", id });
+    const esResponse = await esClient.post({ index: "content", id });
 
     console.log(
       "Elasticsearch Response: ",
