@@ -121,7 +121,9 @@ async function generateQuery(userQuery) {
         }
       } else if (
         elasticsearchQuery.query &&
-        elasticsearchQuery.query.multi_match
+        (elasticsearchQuery.query.multi_match ||
+          elasticsearchQuery.query.match_phrase ||
+          elasticsearchQuery.query.match)
       ) {
         const filteredQuery = {
           query: {
