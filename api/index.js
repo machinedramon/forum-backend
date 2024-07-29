@@ -113,12 +113,9 @@ app.post("/smartsearch", async (req, res) => {
     res.json({ ...esResponse, searchTerms });
   } catch (error) {
     console.error("Erro durante a busca:", error);
-    res
-      .status(500)
-      .json({
-        error:
-          "Erro durante a busca: " + (error.message || "Erro desconhecido"),
-      });
+    res.status(500).json({
+      error: "Erro durante a busca: " + (error.message || "Erro desconhecido"),
+    });
   }
 });
 
