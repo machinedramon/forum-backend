@@ -6,7 +6,7 @@ const fields = [
   "text_1",
   "text_2",
   "text_3",
-  "text_4", 
+  "text_4",
   "text_5",
   "tags.title",
   "filters.title",
@@ -43,8 +43,10 @@ function extractSearchTerms(query) {
         for (let field in matchPhraseQuery) {
           if (fields.includes(field)) {
             // Tratar o termo da consulta match_phrase como uma frase única.
-            const phrase = matchPhraseQuery[field].query.toLowerCase();
-            searchTerms.push(phrase);
+            const phrase = matchPhraseQuery[field]?.toLowerCase();
+            if (phrase) {
+              searchTerms.push(phrase);
+            }
           }
         }
       } else if (key === "match" || key === "multi_match") {
@@ -57,10 +59,12 @@ function extractSearchTerms(query) {
           for (let field in matchQuery) {
             if (fields.includes(field)) {
               // Dividir o termo da consulta match em palavras separadas.
-              const terms = matchQuery[field].query
+              const terms = matchQuery[field]?.query
                 ? matchQuery[field].query.split(" ")
-                : matchQuery[field].split(" ");
-              searchTerms.push(...terms.map((term) => term.toLowerCase()));
+                : matchQuery[field]?.split(" ");
+              if (terms) {
+                searchTerms.push(...terms.map((term) => term.toLowerCase()));
+              }
             }
           }
         }
