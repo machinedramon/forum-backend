@@ -97,8 +97,12 @@ app.get("/logs", (req, res) => {
 // Exemplo de URL de teste: http://localhost:9910/smartsearch
 app.post("/smartsearch", async (req, res) => {
   const { query } = req.body;
+  if (!query) {
+    return res.status(400).json({ error: "A consulta não pode ser vazia." });
+  }
+
   try {
-    console.log("🔍 Recebendo consulta do usuário:", query);
+    console.log("Recebendo consulta do usuário:", query);
     logger.info("Smart search query received", { query });
 
     const startOpenAI = Date.now();
@@ -108,6 +112,7 @@ app.post("/smartsearch", async (req, res) => {
     logger.info("OpenAI response", { query, response: elasticsearchQuery });
 
     const searchTerms = extractSearchTerms(elasticsearchQuery);
+    console.log("Termos de busca extraídos:", searchTerms);
 
     const startElastic = Date.now();
     const esResponse = await executeSearch(elasticsearchQuery);
@@ -116,22 +121,22 @@ app.post("/smartsearch", async (req, res) => {
     logger.info("Elasticsearch response", { query, response: esResponse });
 
     if (esResponse.hits.total.value === 0) {
-      console.log("🔎 Nenhum resultado encontrado.");
+      console.log("Nenhum resultado encontrado.");
       logger.info("No results found", { query });
-      res.status(404).json({ message: "Nenhum resultado encontrado." });
-    } else {
-      console.log(`🔎 Resultados encontrados: ${esResponse.hits.total.value}`);
-      logger.info("Results found", {
-        query,
-        total: esResponse.hits.total.value,
-      });
-      console.log("🔍 Termos de busca extraídos:", searchTerms);
-      res.json({ ...esResponse, searchTerms });
+      return res.status(404).json({ message: "Nenhum resultado encontrado." });
     }
+
+    console.log(`Resultados encontrados: ${esResponse.hits.total.value}`);
+    res.json({ ...esResponse, searchTerms });
   } catch (error) {
-    console.error("❌ Erro durante a busca:", error);
+    console.error("Erro durante a busca:", error);
     logger.error("Error during search", { error: error.message || error });
-    res.status(500).json({ error: error.message || "Erro durante a busca" });
+    res
+      .status(500)
+      .json({
+        error:
+          "Erro durante a busca: " + (error.message || "Erro desconhecido"),
+      });
   }
 });
 
