@@ -154,7 +154,7 @@ app.post("/books", async (req, res) => {
 app.post("/books/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const esResponse = await esClient.post({ index: "content", id });
+    const esResponse = await esClient.get({ index: "content", id });
 
     console.log(
       "Elasticsearch Response: ",
